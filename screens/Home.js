@@ -18,7 +18,7 @@ const Home = ({ route }) => {
         onPress: () => null,
         style: "cancel",
       },
-      //   { text: "YES", onPress: () => BackHandler.exitApp() },
+      { text: "YES", onPress: () => BackHandler.exitApp() },
     ]);
     return true;
   };
