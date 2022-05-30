@@ -49,24 +49,17 @@ const Registrstion = (props) => {
     console.log("empcode", empcode);
     console.log("name", name);
     const data = { email: email, empcode: empcode, name: name, gender: gender };
-    var re =
-      /^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/;
-    if (re.test(email)) {
-      if (
-        email.indexOf(
-          "@spinebiz.com",
-          email.length - "@spinebiz.com".length
-        ) !== -1
-      ) {
-        setDetails(data);
-        setConfirm(true);
-      }
+
+    if (
+      email.indexOf("@spinebiz.com", email.length - "@spinebiz.com".length) !==
+      -1
+    ) {
+      setDetails(data);
+      setConfirm(true);
     } else {
-      Alert.alert(
-        "Invalid email!",
-        "Plz enter valid inputs(Non-empty inputs)",
-        [{ text: "Okay", style: "destructive" }]
-      );
+      Alert.alert("Invalid email!", "Plz enter a valid Email", [
+        { text: "Okay", style: "destructive" },
+      ]);
       return;
     }
 
