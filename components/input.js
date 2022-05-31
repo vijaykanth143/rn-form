@@ -23,10 +23,10 @@ const Input = (props) => {
           borderRadius: 5,
         }}
         placeholder={props.placeholder}
-        value={props.value}
         name={props.name}
         onChangeText={props.onchange}
         textContentType={props.type}
+        defaultValue={props.value}
       />
     </>
   );

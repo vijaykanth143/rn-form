@@ -45,9 +45,6 @@ const Registrstion = (props) => {
   };
 
   const handleSubmit = () => {
-    console.log("email", email);
-    console.log("empcode", empcode);
-    console.log("name", name);
     const data = { email: email, empcode: empcode, name: name, gender: gender };
 
     if (
@@ -55,7 +52,6 @@ const Registrstion = (props) => {
       -1
     ) {
       setDetails(data);
-      setConfirm(true);
     } else {
       Alert.alert("Invalid email!", "Plz enter a valid Email", [
         { text: "Okay", style: "destructive" },
@@ -74,10 +70,9 @@ const Registrstion = (props) => {
         "Plz enter valid inputs(Non-empty inputs)",
         [{ text: "Okay", style: "destructive" }]
       );
-      return;
-    } else {
-      setConfirm(true);
     }
+    navigation.navigate("Home", { data });
+
     setEmpcode("");
     setName("");
     setEmail("");
@@ -86,17 +81,6 @@ const Registrstion = (props) => {
     setShowFemale(false);
     setOneditFemale(false);
     setOneditMale(false);
-
-    if (confirm) {
-      const data = {
-        email: email,
-        empcode: empcode,
-        name: name,
-        gender: gender,
-      };
-      console.log("ggg", data);
-      navigation.navigate("Home", { data });
-    }
   };
 
   const data = [

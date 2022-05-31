@@ -6,11 +6,40 @@ import {
   SafeAreaView,
   BackHandler,
   Alert,
+  Image,
+  Button,
+  TouchableOpacity,
 } from "react-native";
-import { useEffect } from "react/cjs/react.production.min";
+import female from "../assets/images/female.png";
+import male from "../assets/images/male.png";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import Input from "../components/input";
+import { TouchableHighlight } from "react-native";
 
 const Home = ({ route }) => {
   const { data } = route.params;
+  const [email, setEmail] = useState("");
+  const [empcode, setEmpcode] = useState("");
+  const [name, setName] = useState("");
+  const [details, setDetails] = useState({});
+  const [edit, seteditShow] = useState(false);
+  const [showdata, setshowdata] = useState(false);
+  const [showemail, setEmailChange] = useState(false);
+  const [showname, setNameChange] = useState(false);
+  const [showcode, setEmpcodeChange] = useState(false);
+  const handleEmail = (e) => {
+    setEmailChange(true);
+    setEmail(e);
+  };
+  const handleEmpcode = (e) => {
+    setEmpcodeChange(true);
+    setEmpcode(e);
+  };
+  const handleName = (e) => {
+    setNameChange(true);
+    setName(e);
+  };
   const backAction = () => {
     Alert.alert("Hold on!", "Are you sure you want to go back?", [
       {
@@ -27,23 +56,156 @@ const Home = ({ route }) => {
     "hardwareBackPress",
     backAction
   );
+  const editHandler = () => {
+    seteditShow(!edit);
+  };
+  console.log(edit);
+  const handleSubmit = () => {
+    const empdata = { email: email, name: name, empcode: empcode };
+    if (
+      email.indexOf("@spinebiz.com", email.length - "@spinebiz.com".length) !==
+      -1
+    ) {
+      console.log("valid");
+    } else {
+      Alert.alert("Invalid email!", "Plz enter a valid Email", [
+        { text: "Okay", style: "destructive" },
+      ]);
+      return;
+    }
+
+    setDetails(empdata);
+    setshowdata(true);
+    seteditShow(false);
+  };
+  console.log(details);
+  console.log(showdata);
+  const forminputs = [
+    {
+      labelname: "Email",
+      placeholder: "Enter your Email",
+      name: "email",
+      value: showemail ? details.email : data.email,
+
+      type: "email",
+      handle: handleEmail,
+    },
+    {
+      labelname: "EmpCode",
+      placeholder: "Enter your EmpCode",
+      name: "empcode",
+      value: showcode ? details.empcode : data.empcode,
+      type: "text",
+      handle: handleEmpcode,
+    },
+    {
+      labelname: "UserName",
+      placeholder: "Enter your Name",
+      name: "name",
+      value: showname ? details.name : data.name,
+      type: "text",
+      handle: handleName,
+    },
+  ];
+  console.log(details);
   return (
     <SafeAreaView style={styles.home}>
       <View style={styles.header}>
-        <Text>{data.gender}</Text>
+        <Text style={{ fontSize: 25, padding: 10, color: "white" }}>
+          Hi,{" "}
+          <Text style={{ fontSize: 20 }}>
+            {details.name ? details.name : data.name}
+          </Text>
+          <Text style={{ fontSize: 20 }}>👋</Text>
+        </Text>
+        <View style={styles.details}>
+          {data.gender === "male" ? (
+            <Image
+              source={male}
+              style={{
+                borderRadius: 600,
+                height: 90,
+                width: 90,
+                margin: 20,
+              }}
+            />
+          ) : (
+            <Image
+              source={female}
+              style={{
+                borderRadius: 600,
+                height: 90,
+                width: 90,
+                marginHorizontal: 20,
+              }}
+            />
+          )}
+
+          <Text style={{ color: "white", fontSize: 25, marginBottom: 10 }}>
+            {details.name ? details.name : data.name}
+          </Text>
+          <Text style={{ color: "white", fontSize: 12, marginBottom: 10 }}>
+            {details.empcode ? details.empcode : data.empcode}
+          </Text>
+          <Text style={{ color: "white", fontSize: 12 }}>
+            {details.email ? details.email : data.email}
+          </Text>
+        </View>
+        <TouchableOpacity>
+          <MaterialCommunityIcons
+            name="account-edit-outline"
+            size={30}
+            color="black"
+            style={{ padding: 10, paddingRight: 20, textAlign: "right" }}
+            onPress={editHandler}
+          />
+        </TouchableOpacity>
       </View>
+      {edit ? (
+        <View
+          style={{
+            shadowColor: "black",
+            shadowOpacity: 0.26,
+            shadowOffset: { width: 0, height: 2 },
+            shadowRadius: 10,
+            elevation: 50,
+            height: "50%",
+            backgroundColor: "white",
+            paddingHorizontal: 10,
+            paddingVertical: 25,
+          }}
+        >
+          {forminputs.map((item) => (
+            <Input
+              labelname={item.labelname}
+              placeholder={item.placeholder}
+              onchange={item.handle}
+              name={item.name}
+              value={item.value}
+              type={item.type}
+            />
+          ))}
+          <View style={{}}>
+            <Button title="Submit" onPress={handleSubmit} />
+          </View>
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   home: {
     flex: 1,
-
     height: "100%",
   },
   header: {
     backgroundColor: "#2196F3",
-    height: "7%",
+    height: "40%",
+  },
+  details: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
