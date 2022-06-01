@@ -9,10 +9,12 @@ import {
   Image,
   Button,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import female from "../assets/images/female.png";
 import male from "../assets/images/male.png";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect, useState } from "react";
 import Input from "../components/input";
 import { TouchableHighlight } from "react-native";
@@ -161,34 +163,32 @@ const Home = ({ route }) => {
           />
         </TouchableOpacity>
       </View>
+
       {edit ? (
-        <View
-          style={{
-            shadowColor: "black",
-            shadowOpacity: 0.26,
-            shadowOffset: { width: 0, height: 2 },
-            shadowRadius: 10,
-            elevation: 50,
-            height: "50%",
-            backgroundColor: "white",
-            paddingHorizontal: 10,
-            paddingVertical: 25,
-          }}
-        >
-          {forminputs.map((item) => (
-            <Input
-              labelname={item.labelname}
-              placeholder={item.placeholder}
-              onchange={item.handle}
-              name={item.name}
-              value={item.value}
-              type={item.type}
-            />
-          ))}
-          <View style={{}}>
-            <Button title="Submit" onPress={handleSubmit} />
+        <KeyboardAwareScrollView style={{ backgroundColor: "white" }}>
+          <View
+            style={{
+              height: "40%",
+              backgroundColor: "white",
+              paddingHorizontal: 10,
+              paddingVertical: 25,
+            }}
+          >
+            {forminputs.map((item) => (
+              <Input
+                labelname={item.labelname}
+                placeholder={item.placeholder}
+                onchange={item.handle}
+                name={item.name}
+                value={item.value}
+                type={item.type}
+              />
+            ))}
+            <View style={{}}>
+              <Button title="Submit" onPress={handleSubmit} />
+            </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       ) : null}
     </SafeAreaView>
   );
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#2196F3",
-    height: "40%",
+    height: "50%",
   },
   details: {
     flex: 1,

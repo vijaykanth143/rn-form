@@ -12,6 +12,7 @@ import {
   Image,
   Alert,
   AsyncStorageStatic,
+  KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
 import female from "../assets/images/female.png";
@@ -19,6 +20,7 @@ import male from "../assets/images/male.png";
 import edit from "../assets/images/edit.png";
 import Input from "../components/input";
 import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const Registrstion = (props) => {
   const [email, setEmail] = useState("");
@@ -273,33 +275,30 @@ const Registrstion = (props) => {
           ) : null}
         </View>
       </View>
-      <View
-        style={{
-          shadowColor: "black",
-          shadowOpacity: 0.26,
-          shadowOffset: { width: 0, height: 2 },
-          shadowRadius: 10,
-          elevation: 50,
-          height: "60%",
-          backgroundColor: "white",
-          paddingHorizontal: 10,
-          paddingVertical: 25,
-        }}
-      >
-        {data.map((item) => (
-          <Input
-            labelname={item.labelname}
-            placeholder={item.placeholder}
-            onchange={item.handle}
-            name={item.name}
-            value={item.value}
-            type={item.type}
-          />
-        ))}
-        <View style={{}}>
-          <Button title="Submit" onPress={handleSubmit} />
+      <KeyboardAwareScrollView style={{ backgroundColor: "white" }}>
+        <View
+          style={{
+            height: "60%",
+            backgroundColor: "white",
+            paddingHorizontal: 10,
+            paddingVertical: 25,
+          }}
+        >
+          {data.map((item) => (
+            <Input
+              labelname={item.labelname}
+              placeholder={item.placeholder}
+              onchange={item.handle}
+              name={item.name}
+              value={item.value}
+              type={item.type}
+            />
+          ))}
+          <View style={{}}>
+            <Button title="Submit" onPress={handleSubmit} />
+          </View>
         </View>
-      </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 };
