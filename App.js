@@ -1,9 +1,12 @@
 import { NavigationContainer } from "@react-navigation/native";
+import { registerRootComponent } from "expo";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
 import Registration from "./screens/Registration";
-export default function App() {
-  const stack = createNativeStackNavigator();
+import HomeScreen from "./screens/HomeScreen";
+function App() {
+  const stack = createDrawerNavigator();
   return (
     <NavigationContainer>
       <stack.Navigator
@@ -12,7 +15,9 @@ export default function App() {
       >
         <stack.Screen name="Register" component={Registration} />
         <stack.Screen name="Home" component={Home} />
+        <stack.Screen name="HomeScreen" component={HomeScreen} />
       </stack.Navigator>
     </NavigationContainer>
   );
 }
+export default registerRootComponent(App);

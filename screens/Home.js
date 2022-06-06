@@ -18,6 +18,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useEffect, useState } from "react";
 import Input from "../components/input";
 import { TouchableHighlight } from "react-native";
+import Header from "../components/Header";
+import { Entypo } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = ({ route }) => {
   const { data } = route.params;
@@ -30,6 +33,7 @@ const Home = ({ route }) => {
   const [showemail, setEmailChange] = useState(false);
   const [showname, setNameChange] = useState(false);
   const [showcode, setEmpcodeChange] = useState(false);
+  const navigation = useNavigation();
   const handleEmail = (e) => {
     setEmailChange(true);
     setEmail(e);
@@ -66,7 +70,8 @@ const Home = ({ route }) => {
     const empdata = { email: email, name: name, empcode: empcode };
     if (
       email.indexOf("@spinebiz.com", email.length - "@spinebiz.com".length) !==
-      -1
+        -1 ||
+      email == ""
     ) {
       console.log("valid");
     } else {
@@ -109,17 +114,16 @@ const Home = ({ route }) => {
       handle: handleName,
     },
   ];
+  const homeswitch = () => {
+    navigation.navigate("HomeScreen", {
+      name: details.name ? details.name : data.name,
+    });
+  };
   console.log(details);
   return (
     <SafeAreaView style={styles.home}>
       <View style={styles.header}>
-        <Text style={{ fontSize: 25, padding: 10, color: "white" }}>
-          Hi,{" "}
-          <Text style={{ fontSize: 20 }}>
-            {details.name ? details.name : data.name}
-          </Text>
-          <Text style={{ fontSize: 20 }}>👋</Text>
-        </Text>
+        <Header detname={details.name} dataname={data.name} />
         <View style={styles.details}>
           {data.gender === "male" ? (
             <Image
@@ -153,7 +157,15 @@ const Home = ({ route }) => {
             {details.email ? details.email : data.email}
           </Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity style={styles.icons}>
+          <Entypo
+            name="home"
+            size={24}
+            color="black"
+            style={{ padding: 10, paddingLeft: 20, textAlign: "left" }}
+            onPress={homeswitch}
+          />
+          <Text onPress={() => {}}>Change Password</Text>
           <MaterialCommunityIcons
             name="account-edit-outline"
             size={30}
@@ -205,6 +217,11 @@ const styles = StyleSheet.create({
   details: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
+  },
+  icons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
 });

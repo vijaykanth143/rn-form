@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Picker,
   AsyncStorageStatic,
   KeyboardAvoidingView,
   ScrollView,
@@ -21,12 +22,26 @@ import edit from "../assets/images/edit.png";
 import Input from "../components/input";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import HeaderReg from "../components/HeaderReg";
+import DropdownComponent from "../components/Dropdown";
 
 const Registrstion = (props) => {
   const [email, setEmail] = useState("");
   const [empcode, setEmpcode] = useState("");
   const [name, setName] = useState("");
-
+  const [passWord, setPassword] = useState("");
+  const [category] = useState([
+    {
+      itemName: "What is Your Petname?",
+    },
+    {
+      itemName: "What is your School name?",
+    },
+    {
+      itemName: "What is your native place?",
+    },
+  ]);
+  const [selectedcat, setcat] = useState("");
   const [details, setDetails] = useState({});
   const [onEditMale, setOneditMale] = useState(false);
   const [onShowGenderMale, setShowMale] = useState(false);
@@ -36,6 +51,7 @@ const Registrstion = (props) => {
   const [confirm, setConfirm] = useState(false);
   const [gender, setGender] = useState("");
   const navigation = useNavigation();
+  console.log(category);
   const handleEmail = (e) => {
     setEmail(e);
   };
@@ -45,9 +61,17 @@ const Registrstion = (props) => {
   const handleName = (e) => {
     setName(e);
   };
-
+  const handlePassword = (e) => {
+    setPassword(e);
+  };
   const handleSubmit = () => {
-    const data = { email: email, empcode: empcode, name: name, gender: gender };
+    const data = {
+      email: email,
+      empcode: empcode,
+      name: name,
+      gender: gender,
+      passWord: passWord,
+    };
 
     if (
       email.indexOf("@spinebiz.com", email.length - "@spinebiz.com".length) !==
@@ -110,6 +134,14 @@ const Registrstion = (props) => {
       type: "text",
       handle: handleName,
     },
+    {
+      labelname: "Password",
+      placeholder: "Enter your Password",
+      name: "password",
+      value: passWord,
+      type: "password",
+      handle: handlePassword,
+    },
   ];
   const handleGenderMale = () => {
     setmodalvisible(!modalvisible);
@@ -128,9 +160,12 @@ const Registrstion = (props) => {
     setOneditFemale(!onEditFemale);
     setGender("Female");
   };
-
+  const onValueChangeCat = (value) => {
+    setcat(value);
+  };
   return (
     <View style={{ height: "100%" }}>
+      <HeaderReg name="Employee Registration" />
       <View
         style={{
           height: "40%",
@@ -144,18 +179,8 @@ const Registrstion = (props) => {
           elevation: 5,
         }}
       >
-        <StatusBar animated={true} backgroundColor="#006BFF" />
-        <Text
-          style={{
-            fontSize: 20,
-            textAlign: "center",
-            marginBottom: 10,
-            fontWeight: "bold",
-            color: "white",
-          }}
-        >
-          Employee Registrstion
-        </Text>
+        <StatusBar animated={true} backgroundColor="#1767DD" />
+
         <View
           style={{
             flexDirection: "row",
@@ -294,6 +319,32 @@ const Registrstion = (props) => {
               type={item.type}
             />
           ))}
+          <Text
+            style={{
+              marginBottom: 5,
+              fontSize: 18,
+              fontFamily: "Fantasy",
+              color: "#2196F3",
+            }}
+          >
+            Select a Question
+          </Text>
+          <Picker
+            itemStyle={styles.itemStyle}
+            mode="dropdown"
+            style={styles.pickerStyle}
+            selectedValue={selectedcat}
+            onValueChange={onValueChangeCat}
+          >
+            {category.map((item, index) => (
+              <Picker.Item
+                color="#0087F0"
+                label={item.itemName}
+                value={item.itemName}
+                index={index}
+              />
+            ))}
+          </Picker>
           <View style={{}}>
             <Button title="Submit" onPress={handleSubmit} />
           </View>
@@ -302,5 +353,19 @@ const Registrstion = (props) => {
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  itemStyle: {
+    fontSize: 10,
+    fontFamily: "Roboto-Regular",
+    color: "#007aff",
+  },
+  pickerStyle: {
+    height: 40,
+    borderColor: "grey",
+    borderWidth: 2,
+    paddingLeft: 8,
+    marginBottom: 15,
+    borderRadius: 5,
+  },
+});
 export default Registrstion;
