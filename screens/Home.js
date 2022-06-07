@@ -21,11 +21,12 @@ import { TouchableHighlight } from "react-native";
 import Header from "../components/Header";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
+import { Picker } from "@react-native-picker/picker";
 const Home = ({ route }) => {
   const { data } = route.params;
   const [email, setEmail] = useState("");
   const [empcode, setEmpcode] = useState("");
+  const [Answer, setAnswer] = useState("");
   const [name, setName] = useState("");
   const [details, setDetails] = useState({});
   const [edit, seteditShow] = useState(false);
@@ -33,6 +34,10 @@ const Home = ({ route }) => {
   const [showemail, setEmailChange] = useState(false);
   const [showname, setNameChange] = useState(false);
   const [showcode, setEmpcodeChange] = useState(false);
+  const [password, setPassword] = useState(false);
+  const [changePassword, setPasswordChange] = useState(false);
+  console.log(password);
+  console.log(changePassword);
   const navigation = useNavigation();
   const handleEmail = (e) => {
     setEmailChange(true);
@@ -53,7 +58,7 @@ const Home = ({ route }) => {
         onPress: () => null,
         style: "cancel",
       },
-      { text: "YES", onPress: () => BackHandler.exitApp() },
+      { text: "YES", onPress: () => navigation.goBack() },
     ]);
     return true;
   };
@@ -63,9 +68,10 @@ const Home = ({ route }) => {
     backAction
   );
   const editHandler = () => {
-    seteditShow(!edit);
+    seteditShow(true);
+    setPassword(false);
   };
-  console.log(edit);
+
   const handleSubmit = () => {
     const empdata = { email: email, name: name, empcode: empcode };
     if (
@@ -85,8 +91,7 @@ const Home = ({ route }) => {
     setshowdata(true);
     seteditShow(false);
   };
-  console.log(details);
-  console.log(showdata);
+
   const forminputs = [
     {
       labelname: "Email",
@@ -114,12 +119,25 @@ const Home = ({ route }) => {
       handle: handleName,
     },
   ];
+  const handleAnswer = (e) => {
+    setAnswer(e);
+  };
   const homeswitch = () => {
     navigation.navigate("HomeScreen", {
       name: details.name ? details.name : data.name,
     });
   };
-  console.log(details);
+
+  const handlePassword = () => {
+    if (data.answer !== Answer) {
+      Alert.alert("Invalid Answer!", "Plz enter a valid Answer", [
+        { text: "Okay", style: "destructive" },
+      ]);
+      return;
+    } else {
+      setPasswordChange(true);
+    }
+  };
   return (
     <SafeAreaView style={styles.home}>
       <View style={styles.header}>
@@ -165,7 +183,16 @@ const Home = ({ route }) => {
             style={{ padding: 10, paddingLeft: 20, textAlign: "left" }}
             onPress={homeswitch}
           />
-          <Text onPress={() => {}}>Change Password</Text>
+
+          <Text
+            onPress={() => {
+              setPassword(true);
+              seteditShow(false);
+            }}
+          >
+            Change Password
+          </Text>
+
           <MaterialCommunityIcons
             name="account-edit-outline"
             size={30}
@@ -199,6 +226,32 @@ const Home = ({ route }) => {
             <View style={{}}>
               <Button title="Submit" onPress={handleSubmit} />
             </View>
+          </View>
+        </KeyboardAwareScrollView>
+      ) : password ? (
+        <KeyboardAwareScrollView style={{ backgroundColor: "white" }}>
+          <View
+            style={{
+              height: "40%",
+              backgroundColor: "white",
+              paddingHorizontal: 10,
+              paddingVertical: 25,
+            }}
+          >
+            <Input
+              labelname="Security Question"
+              name={data.question}
+              question={data.question}
+            />
+            <Input
+              labelname="Answer"
+              placeholder="Enter your answer"
+              onchange={handleAnswer}
+              name="answer"
+              value={Answer}
+              type="text"
+            />
+            <Button title="Submit" onPress={handlePassword} />
           </View>
         </KeyboardAwareScrollView>
       ) : null}

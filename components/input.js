@@ -26,7 +26,9 @@ const Input = (props) => {
         name={props.name}
         onChangeText={props.onchange}
         textContentType={props.type}
+        value={props.question}
         defaultValue={props.value}
+        secureTextEntry={props.secureTextEntry}
       />
     </>
   );

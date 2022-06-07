@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-const HeaderHome = ({ name }) => {
+const HeaderHome = ({ name, navigate }) => {
   return (
     <View style={{ backgroundColor: "#2874F0" }}>
       <Text
@@ -9,7 +9,10 @@ const HeaderHome = ({ name }) => {
           padding: 15,
           color: "white",
         }}
-      ></Text>
+        onPress={() => navigate.goBack()}
+      >
+        Back
+      </Text>
     </View>
   );
 };

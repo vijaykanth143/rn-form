@@ -1,5 +1,5 @@
 //This is an example of online Emulator by https://aboutreact.com
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Text,
   View,
@@ -11,11 +11,11 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Picker,
   AsyncStorageStatic,
   KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import female from "../assets/images/female.png";
 import male from "../assets/images/male.png";
 import edit from "../assets/images/edit.png";
@@ -23,35 +23,37 @@ import Input from "../components/input";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import HeaderReg from "../components/HeaderReg";
-import DropdownComponent from "../components/Dropdown";
 
 const Registrstion = (props) => {
   const [email, setEmail] = useState("");
+  const [Answer, setAnswer] = useState("");
   const [empcode, setEmpcode] = useState("");
   const [name, setName] = useState("");
   const [passWord, setPassword] = useState("");
-  const [category] = useState([
-    {
-      itemName: "What is Your Petname?",
-    },
-    {
-      itemName: "What is your School name?",
-    },
-    {
-      itemName: "What is your native place?",
-    },
-  ]);
-  const [selectedcat, setcat] = useState("");
+  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
   const [details, setDetails] = useState({});
   const [onEditMale, setOneditMale] = useState(false);
   const [onShowGenderMale, setShowMale] = useState(false);
   const [onEditFemale, setOneditFemale] = useState(false);
   const [onShowGenderFemale, setShowFemale] = useState(false);
   const [modalvisible, setmodalvisible] = useState(true);
-  const [confirm, setConfirm] = useState(false);
   const [gender, setGender] = useState("");
+
   const navigation = useNavigation();
-  console.log(category);
+  const pickerRef = useRef();
+
+  function open() {
+    pickerRef.current.focus();
+  }
+
+  function close() {
+    pickerRef.current.blur();
+  }
+
+  const handleAnswer = (e) => {
+    setAnswer(e);
+  };
   const handleEmail = (e) => {
     setEmail(e);
   };
@@ -71,8 +73,9 @@ const Registrstion = (props) => {
       name: name,
       gender: gender,
       passWord: passWord,
+      question: selectedQuestion,
+      answer: Answer,
     };
-
     if (
       email.indexOf("@spinebiz.com", email.length - "@spinebiz.com".length) !==
       -1
@@ -84,24 +87,29 @@ const Registrstion = (props) => {
       ]);
       return;
     }
-
     if (
       email.length <= 0 ||
       empcode.length <= 0 ||
       name.length <= 0 ||
-      gender.length <= 0
+      gender.length <= 0 ||
+      passWord.length <= 0 ||
+      selectedQuestion.length <= 0 ||
+      Answer.length <= 0
     ) {
       Alert.alert(
         "Invalid Inputs!",
         "Plz enter valid inputs(Non-empty inputs)",
         [{ text: "Okay", style: "destructive" }]
       );
+      return;
     }
     navigation.navigate("Home", { data });
-
+    setAnswer("");
+    setEmail("");
     setEmpcode("");
     setName("");
-    setEmail("");
+    setPassword("");
+    setSelectedQuestion("");
     setmodalvisible(true);
     setShowMale(false);
     setShowFemale(false);
@@ -110,6 +118,14 @@ const Registrstion = (props) => {
   };
 
   const data = [
+    {
+      labelname: "Answer",
+      placeholder: "Enter your Answer",
+      name: "Answer",
+      value: Answer,
+      type: "text",
+      handle: handleAnswer,
+    },
     {
       labelname: "Email",
       placeholder: "Enter your Email",
@@ -139,10 +155,12 @@ const Registrstion = (props) => {
       placeholder: "Enter your Password",
       name: "password",
       value: passWord,
-      type: "password",
+      //type: "password",
       handle: handlePassword,
+      secure: showPassword,
     },
   ];
+
   const handleGenderMale = () => {
     setmodalvisible(!modalvisible);
     setShowMale(!onShowGenderMale);
@@ -151,24 +169,19 @@ const Registrstion = (props) => {
   useEffect(() => {
     setGender(onShowGenderMale ? "male" : onShowGenderFemale ? "Female" : "");
   }, [onShowGenderMale, onShowGenderFemale]);
-  // useEffect(() => {
-  //   setGender(onShowGenderFemale ? "Female" : "");
-  // }, [onShowGenderFemale]);
   const handleGenderFemale = () => {
     setmodalvisible(!modalvisible);
     setShowFemale(!onShowGenderFemale);
     setOneditFemale(!onEditFemale);
     setGender("Female");
   };
-  const onValueChangeCat = (value) => {
-    setcat(value);
-  };
+
   return (
     <View style={{ height: "100%" }}>
       <HeaderReg name="Employee Registration" />
       <View
         style={{
-          height: "40%",
+          height: "30%",
           justifyContent: "center",
           paddingHorizontal: 20,
           backgroundColor: "#2196F3",
@@ -303,12 +316,52 @@ const Registrstion = (props) => {
       <KeyboardAwareScrollView style={{ backgroundColor: "white" }}>
         <View
           style={{
-            height: "60%",
+            height: "70%",
             backgroundColor: "white",
             paddingHorizontal: 10,
             paddingVertical: 25,
           }}
         >
+          <View>
+            <Text
+              style={{
+                marginBottom: 5,
+                fontSize: 18,
+                fontFamily: "Fantasy",
+                color: "#2196F3",
+              }}
+            >
+              Security Question
+            </Text>
+            <View
+              style={{
+                height: 40,
+                borderColor: "grey",
+                borderWidth: 2,
+                paddingLeft: 8,
+                marginBottom: 15,
+                borderRadius: 5,
+                justifyContent: "center",
+              }}
+            >
+              <Picker
+                ref={pickerRef}
+                selectedValue={selectedQuestion}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedQuestion(itemValue)
+                }
+              >
+                <Picker.Item
+                  label="What is your Nick name?"
+                  value="What is your Nick name?"
+                />
+                <Picker.Item
+                  label="What is your petname?"
+                  value="What is your petname?"
+                />
+              </Picker>
+            </View>
+          </View>
           {data.map((item) => (
             <Input
               labelname={item.labelname}
@@ -317,39 +370,26 @@ const Registrstion = (props) => {
               name={item.name}
               value={item.value}
               type={item.type}
+              secureTextEntry={item.secure}
             />
           ))}
-          <Text
+          <View
             style={{
-              marginBottom: 5,
-              fontSize: 18,
-              fontFamily: "Fantasy",
-              color: "#2196F3",
+              marginBottom: 20,
+              alignItems: "center",
+              backgroundColor: "transparent",
             }}
           >
-            Select a Question
-          </Text>
-          <Picker
-            itemStyle={styles.itemStyle}
-            mode="dropdown"
-            style={styles.pickerStyle}
-            selectedValue={selectedcat}
-            onValueChange={onValueChangeCat}
-          >
-            {category.map((item, index) => (
-              <Picker.Item
-                color="#0087F0"
-                label={item.itemName}
-                value={item.itemName}
-                index={index}
-              />
-            ))}
-          </Picker>
-          <View style={{}}>
-            <Button title="Submit" onPress={handleSubmit} />
+            <Button
+              title="Show Password"
+              onPress={() => setShowPassword(!showPassword)}
+            />
           </View>
         </View>
       </KeyboardAwareScrollView>
+      <View>
+        <Button title="Submit" onPress={handleSubmit} />
+      </View>
     </View>
   );
 };
@@ -366,6 +406,10 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     marginBottom: 15,
     borderRadius: 5,
+  },
+  passWord: {
+    textAlign: "center",
+    marginBottom: 30,
   },
 });
 export default Registrstion;
